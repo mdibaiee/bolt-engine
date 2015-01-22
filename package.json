@@ -1,0 +1,33 @@
+{
+  "name": "bolt",
+  "version": "0.0.1",
+  "description": "A particle based physics engine written in ES6",
+  "main": "bolt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "jspm bundle-sfx src/main",
+    "watch": "node watch.js"
+  },
+  "keywords": [
+    "physics"
+  ],
+  "author": "Mahdi Dibaiee",
+  "license": "MIT",
+  "devDependencies": {
+    "6to5ify": "^3.1.2",
+    "async": "^0.9.0",
+    "browserify": "^8.1.1",
+    "chalk": "^0.5.1",
+    "grunt": "^0.4.5",
+    "grunt-6to5": "^2.0.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "q": "^1.1.2",
+    "watch": "^0.13.0",
+    "watchify": "^2.2.1"
+  },
+  "jspm": {
+    "directories": {
+      "lib": "src"
+    }
+  }
+}
