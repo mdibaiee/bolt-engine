@@ -20,15 +20,11 @@ var Play = {
   start: function(fn) {
     Frames.tick(Date.now());
 
-    var canvas = typeof Bolt.configs.canvas === 'function' ? Bolt.configs.canvas() : Bolt.configs.canvas;
-    Bolt._canvas = canvas;
-    var ctx = canvas.getContext('2d');
-
     (function loop() {
       reqAnimFrame(function(now) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'black';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // ctx.fillStyle = 'black';
+        // ctx.fillRect(0, 0, canvas.width, canvas.height);
         var avg = Frames.tick(now);
 
         for(var i = 0, len = Bolt.objects.length; i < len; i++) {
@@ -44,10 +40,10 @@ var Play = {
             object.velocity.add(acc.scalar(Frames.elapsed));
             object.velocity.scalar(Math.pow(object.damping, Frames.elapsed));
 
-            ctx.beginPath();
-            ctx.fillStyle = object.color;
-            ctx.arc(object.position.x, object.position.y, object.mass, 0, 2*Math.PI);
-            ctx.fill();
+            // ctx.beginPath();
+            // ctx.fillStyle = object.color;
+            // ctx.arc(object.position.x, object.position.y, object.mass, 0, 2*Math.PI);
+            // ctx.fill();
           }
         }
 

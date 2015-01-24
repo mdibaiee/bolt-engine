@@ -470,7 +470,7 @@
           },
           globalMass: 10,
           global: function (mass, g) {
-            return new Vector(0, mass * (g || this.globalMass), 0);
+            return new Vector(0, -mass * (g || this.globalMass), 0);
           }
         };
         $__export("default", Gravity);
@@ -525,14 +525,8 @@
           playing: false,
           start: function (fn) {
             Frames.tick(Date.now());
-            var canvas = typeof Bolt.configs.canvas === "function" ? Bolt.configs.canvas() : Bolt.configs.canvas;
-            Bolt._canvas = canvas;
-            var ctx = canvas.getContext("2d");
             (function loop() {
               reqAnimFrame(function (now) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "black";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
                 var avg = Frames.tick(now);
                 for (var i = 0,
                     len = Bolt.objects.length; i < len; i++) {
@@ -544,10 +538,6 @@
                     acc.add(force);
                     object.velocity.add(acc.scalar(Frames.elapsed));
                     object.velocity.scalar(Math.pow(object.damping, Frames.elapsed));
-                    ctx.beginPath();
-                    ctx.fillStyle = object.color;
-                    ctx.arc(object.position.x, object.position.y, object.mass, 0, 2 * Math.PI);
-                    ctx.fill();
                   }
                 }
                 if (fn) fn.apply(this, arguments);
@@ -589,16 +579,7 @@
       }],
       execute: function () {
         Bolt = {
-          configs: {
-            globalGravity: true,
-            canvas: function () {
-              var canvas = document.createElement("canvas");
-              canvas.width = window.innerWidth;
-              canvas.height = window.innerHeight;
-              document.body.appendChild(canvas);
-              return canvas;
-            }
-          },
+          configs: { globalGravity: true },
           config: function (o) {
             for (var i in o) {
               this.configs[i] = o[i];

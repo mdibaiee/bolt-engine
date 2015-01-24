@@ -12,7 +12,7 @@ var Gravity = {
 
   globalMass: 10,
   global: function(mass, g) {
-    return new Vector(0, mass * (g || this.globalMass), 0);
+    return new Vector(0, -mass * (g || this.globalMass), 0);
   }
 };
 

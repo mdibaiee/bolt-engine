@@ -6,16 +6,7 @@ import Play from './lib/play';
 
 var Bolt = {
   configs: {
-    globalGravity: true,
-    canvas: function() {
-      var canvas = document.createElement('canvas');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      document.body.appendChild(canvas);
-
-      return canvas;
-    }
+    globalGravity: true
   },
 
   config: function(o) {
