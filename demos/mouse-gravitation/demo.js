@@ -24,10 +24,10 @@ var middle = new Bolt.Vector(window.innerWidth / 2, window.innerHeight / 2, 0);
 for(var i = 0; i < 20; i++) {
   var p = new Bolt.Particle({
     position: middle.clone(),
-    mass: 1
+    mass: 100
   });
 
-  var sphere =  new LiThree.ObjectFactory.Sphere(50, 20, 20);
+  var sphere =  new LiThree.ObjectFactory.Sphere(5, 20, 20);
   sphere.color.rgb(0.2, 0.2, 0.2);
 
   world.add(sphere);
@@ -50,9 +50,9 @@ Bolt.Play.start(function() {
   for(var i = 1, len = Bolt.objects.length; i < len; i++) {
     var p = Bolt.objects[i];
 
-    // var mouseGravity = new Bolt.Force.generators.Gravity(p, mouse);
+    var mouseGravity = new Bolt.Force.generators.Gravity(p, mouse);
 
-    // Bolt.Force.add(p, mouseGravity);
+    Bolt.Force.add(p, mouseGravity);
 
     syncPositions(p);
   }

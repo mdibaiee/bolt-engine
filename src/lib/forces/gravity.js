@@ -17,6 +17,9 @@ function Gravity(o1, o2) {
     acc / (distance.y*distance.y),
     acc / (distance.z*distance.z)
   );
+  if(this.force.x === Infinity) this.force.x = 0;
+  if(this.force.y === Infinity) this.force.y = 0;
+  if(this.force.z === Infinity) this.force.z = 0;
 }
 
 Gravity.prototype.apply = function(particle, duration) {

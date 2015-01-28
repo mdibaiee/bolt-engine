@@ -542,6 +542,9 @@
       var acc = mass * g;
       var distance = new Vector(o1.position.x - o2.position.x, o1.position.y - o2.position.y, o1.position.z - o2.position.z);
       this.force = new Vector(acc / (distance.x * distance.x), acc / (distance.y * distance.y), acc / (distance.z * distance.z));
+      if (this.force.x === Infinity) this.force.x = 0;
+      if (this.force.y === Infinity) this.force.y = 0;
+      if (this.force.z === Infinity) this.force.z = 0;
     }
     return {
       setters: [function (m) {
