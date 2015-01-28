@@ -55,7 +55,7 @@ Bolt.Play.start(function() {
     fireworks.push(new Firework({
       type: 0,
       position: Bolt.Vector(window.innerWidth/4, 0, 0),
-      mass: 4
+      mass: 2
     }));
     count = 0;
   }
@@ -79,7 +79,7 @@ Bolt.Play.start(function() {
           type: 1,
           position: fw.particle.position.clone(),
           velocity: vel,
-          mass: 2
+          mass: 1
         });
         fireworks.push(childFirework);
       }

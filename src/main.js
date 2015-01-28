@@ -3,6 +3,7 @@ import Particle from './lib/particle';
 import Gravity from './lib/gravity';
 import Frames from './lib/frames';
 import Play from './lib/play';
+import Force from './lib/force';
 
 var Bolt = {
   configs: {
@@ -22,7 +23,8 @@ var Bolt = {
   Particle: Particle,
   Gravity: Gravity,
   Frames: Frames,
-  Play: Play
+  Play: Play,
+  Force: Force
 };
 
 window.Bolt = Bolt;

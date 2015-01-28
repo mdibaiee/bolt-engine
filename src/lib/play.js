@@ -1,5 +1,5 @@
 import Frames from './frames';
-import Gravity from './gravity';
+import Force from './force';
 import Bolt from '../main';
 
 
@@ -22,29 +22,24 @@ var Play = {
 
     (function loop() {
       reqAnimFrame(function(now) {
-        // ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // ctx.fillStyle = 'black';
-        // ctx.fillRect(0, 0, canvas.width, canvas.height);
         var avg = Frames.tick(now);
 
         for(var i = 0, len = Bolt.objects.length; i < len; i++) {
           var object = Bolt.objects[i];
 
           if(Bolt.configs.globalGravity) {
-            var force = Gravity.global(object.inverseMass);
-
-            object.position.add(object.velocity.clone().scalar(Frames.elapsed));
-
-            var acc = object.acceleration.clone();
-            acc.add(force);
-            object.velocity.add(acc.scalar(Frames.elapsed));
-            object.velocity.scalar(Math.pow(object.damping, Frames.elapsed));
-
-            // ctx.beginPath();
-            // ctx.fillStyle = object.color;
-            // ctx.arc(object.position.x, object.position.y, object.mass, 0, 2*Math.PI);
-            // ctx.fill();
+            var gravity = new Force.generators.GlobalGravity(object.mass);
+            Force.add(object, gravity);
           }
+
+          object.position.add(object.velocity.clone().scalar(Frames.elapsed));
+            // object.velocity.scalar(Math.pow(object.damping, Frames.elapsed));
+
+          object.acceleration.scalar(Frames.elapsed);
+          object.velocity.add(object.acceleration);
+
+          Force.run();
+          Force.clear();
         }
 
         if(fn) fn.apply(this, arguments);

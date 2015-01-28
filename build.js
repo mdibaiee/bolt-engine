@@ -507,15 +507,113 @@
 
 
 
-  System.register("src/lib/play", ["src/lib/frames", "src/lib/gravity", "src/main"], function ($__export) {
+  System.register("src/lib/forces/global-gravity", ["src/lib/vector", "src/main"], function ($__export) {
+    "use strict";
+    var __moduleName = "src/lib/forces/global-gravity";
+    var Vector, Bolt;
+    function GlobalGravity(mass) {
+      var g = arguments[1] !== void 0 ? arguments[1] : Bolt.ugravitation || 10;
+      this.force = new Vector(0, -mass * g, 0);
+    }
+    return {
+      setters: [function (m) {
+        Vector = m["default"];
+      }, function (m) {
+        Bolt = m["default"];
+      }],
+      execute: function () {
+        GlobalGravity.prototype.apply = function (particle, duration) {
+          particle.acceleration.add(this.force);
+        };
+        $__export("default", GlobalGravity);
+      }
+    };
+  });
+
+
+
+  System.register("src/lib/forces/gravity", ["src/lib/vector", "src/main"], function ($__export) {
+    "use strict";
+    var __moduleName = "src/lib/forces/gravity";
+    var Vector, Bolt;
+    function Gravity(o1, o2) {
+      var mass = o1.mass * o2.mass;
+      var g = Bolt.ugravitation || 10;
+      var acc = mass * g;
+      var distance = new Vector(o1.position.x - o2.position.x, o1.position.y - o2.position.y, o1.position.z - o2.position.z);
+      this.force = new Vector(acc / (distance.x * distance.x), acc / (distance.y * distance.y), acc / (distance.z * distance.z));
+    }
+    return {
+      setters: [function (m) {
+        Vector = m["default"];
+      }, function (m) {
+        Bolt = m["default"];
+      }],
+      execute: function () {
+        Gravity.prototype.apply = function (particle, duration) {
+          particle.acceleration.add(this.force);
+        };
+        $__export("default", Gravity);
+      }
+    };
+  });
+
+
+
+  System.register("src/lib/force", ["src/lib/vector", "src/lib/forces/global-gravity", "src/lib/forces/gravity"], function ($__export) {
+    "use strict";
+    var __moduleName = "src/lib/force";
+    var Vector, GlobalGravity, Gravity, Force;
+    return {
+      setters: [function (m) {
+        Vector = m["default"];
+      }, function (m) {
+        GlobalGravity = m["default"];
+      }, function (m) {
+        Gravity = m["default"];
+      }],
+      execute: function () {
+        Force = {
+          registry: [],
+          generators: {
+            GlobalGravity: GlobalGravity,
+            Gravity: Gravity
+          },
+          add: function (particle, force) {
+            this.registry.push([particle, force]);
+            return this.forces;
+          },
+          remove: function (particle, force) {
+            var reg = this.registry;
+            this.registry.forEach(function (el, i) {
+              if (el[0] === particle && el[1] === force) reg.splice(i, 1);
+            });
+          },
+          clear: function () {
+            this.registry.length = 0;
+          },
+          run: function (duration) {
+            this.registry.forEach(function (el) {
+              el[1].apply(el[0], duration);
+            });
+          }
+        };
+        $__export("default", Force);
+      }
+    };
+  });
+
+
+
+  System.register("src/lib/play", ["src/lib/frames", "src/lib/force", "src/main"], function ($__export) {
     "use strict";
     var __moduleName = "src/lib/play";
-    var Frames, Gravity, Bolt, reqAnimFrame, cancelAnimFrame, Play;
+    var Frames, Force, Bolt, reqAnimFrame, cancelAnimFrame, Play;
     return {
       setters: [function (m) {
         Frames = m["default"];
       }, function (m) {
-        Gravity = m["default"];
+        Force = m["default"];
       }, function (m) {
         Bolt = m["default"];
       }],
@@ -532,13 +630,14 @@
                     len = Bolt.objects.length; i < len; i++) {
                   var object = Bolt.objects[i];
                   if (Bolt.configs.globalGravity) {
-                    var force = Gravity.global(object.inverseMass);
-                    object.position.add(object.velocity.clone().scalar(Frames.elapsed));
-                    var acc = object.acceleration.clone();
-                    acc.add(force);
-                    object.velocity.add(acc.scalar(Frames.elapsed));
-                    object.velocity.scalar(Math.pow(object.damping, Frames.elapsed));
+                    var gravity = new Force.generators.GlobalGravity(object.mass);
+                    Force.add(object, gravity);
                   }
+                  object.position.add(object.velocity.clone().scalar(Frames.elapsed));
+                  object.acceleration.scalar(Frames.elapsed);
+                  object.velocity.add(object.acceleration);
+                  Force.run();
+                  Force.clear();
                 }
                 if (fn) fn.apply(this, arguments);
                 loop();
@@ -561,10 +660,10 @@
 
 
 
-  System.register("src/main", ["src/lib/vector", "src/lib/particle", "src/lib/gravity", "src/lib/frames", "src/lib/play"], function ($__export) {
+  System.register("src/main", ["src/lib/vector", "src/lib/particle", "src/lib/gravity", "src/lib/frames", "src/lib/play", "src/lib/force"], function ($__export) {
     "use strict";
     var __moduleName = "src/main";
-    var Vector, Particle, Gravity, Frames, Play, Bolt;
+    var Vector, Particle, Gravity, Frames, Play, Force, Bolt;
     return {
       setters: [function (m) {
         Vector = m["default"];
@@ -576,6 +675,8 @@
         Frames = m["default"];
       }, function (m) {
         Play = m["default"];
+      }, function (m) {
+        Force = m["default"];
       }],
       execute: function () {
         Bolt = {
@@ -591,7 +692,8 @@
           Particle: Particle,
           Gravity: Gravity,
           Frames: Frames,
-          Play: Play
+          Play: Play,
+          Force: Force
         };
         window.Bolt = Bolt;
         $__export("default", Bolt);

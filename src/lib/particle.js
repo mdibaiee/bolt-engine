@@ -30,6 +30,6 @@ Object.defineProperties(Particle.prototype, {
 
 Particle.prototype.destroy = function() {
   return Bolt.objects.splice(Bolt.objects.indexOf(this), 1);
-}
+};
 
 export default Particle;
